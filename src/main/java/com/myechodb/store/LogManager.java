@@ -1,22 +1,14 @@
 package com.myechodb.store;
 
 import java.io.IOException;
-import java.io.IOException;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Files;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Path;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 class LogManager {
 
@@ -31,12 +23,10 @@ class LogManager {
                 map.put(parts[0], parts[1]);
             }
         }
-        System.out.println(map);
     }
 
     public static void main(String[] args) {
         try {
-            System.out.println("Hello World!");
             readLog();
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,9 +37,25 @@ class LogManager {
             String input = sc.nextLine();
 
             if (input.isEmpty()) continue;
-
             String[] parts = input.split(" ");
-            if (parts[0].equals("get")) {
+
+            String cmd = parts[0].toLowerCase();
+            if (!cmd.equals("get") && !cmd.equals("set")) {
+                System.out.println("Unknown command");
+                continue;
+            }
+
+            if (cmd.equals("get") && parts.length != 2) {
+                System.out.println("Invalid GET command");
+                continue;
+            }
+
+            if (cmd.equals("set") && parts.length != 3) {
+                System.out.println("Invalid SET command");
+                continue;
+            }
+
+            if (parts[0].toLowerCase().equals("get")) {
                 String key = parts[1];
                 String value = map.get(key);
                 System.out.println(value);
