@@ -10,12 +10,15 @@ import java.nio.file.StandardOpenOption;
 class LogManager {
 
     public static void main(String[] args) {
-        String data = "val: 10\n";
+        String rawKV = "val:10";
+        long checksum = ChecksumCR32.calculateChecksum(rawKV);
+        String finalLine = rawKV + ":" + checksum + "\n";
+
         Path logFile = Paths.get("data", "log.txt");
         try {
             Files.write(
                 logFile,
-                data.getBytes(StandardCharsets.UTF_8),
+                finalLine.getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND,
                 StandardOpenOption.SYNC
