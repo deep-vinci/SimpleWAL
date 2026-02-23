@@ -20,7 +20,14 @@ class LogManager {
         for (String line : lines) {
             String[] parts = line.split(":");
             if (parts.length == 3) {
-                map.put(parts[0], parts[1]);
+                String kv = parts[0] + ":" + parts[1];
+                long localChecksum = ChecksumCR32.calculateChecksum(kv);
+
+                if (String.valueOf(localChecksum).equals(parts[2])) {
+                    map.put(parts[0], parts[1]);
+                } else {
+                    return;
+                }
             }
         }
     }
@@ -40,7 +47,9 @@ class LogManager {
             String[] parts = input.split(" ");
 
             String cmd = parts[0].toLowerCase();
-            if (!cmd.equals("get") && !cmd.equals("set")) {
+            if (
+                !cmd.equals("get") && !cmd.equals("set") && !cmd.equals("exit")
+            ) {
                 System.out.println("Unknown command");
                 continue;
             }
@@ -60,6 +69,11 @@ class LogManager {
                 String value = map.get(key);
                 System.out.println(value);
                 continue;
+            }
+
+            if (parts[0].toLowerCase().equals("exit")) {
+                System.out.println("Exiting...");
+                System.exit(0);
             }
 
             String key = parts[1];
