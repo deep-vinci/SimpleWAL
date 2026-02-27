@@ -6,13 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 class LogManager {
 
-    static HashMap<String, String> map = new HashMap<>();
+    static TreeMap<String, String> map = new TreeMap<>();
 
     public static void readLog() throws IOException {
         List<String> lines = Files.readAllLines(Path.of("data/log.txt"));
