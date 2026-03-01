@@ -36,7 +36,7 @@ class LogManager {
     public static void main(String[] args) {
         try {
             readLog();
-            m
+            MemTableLimit.limitReached(memTable);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,9 +95,19 @@ class LogManager {
                 );
                 memTable.put(key, value);
                 System.out.println("Data written to log file");
+
+                MemTableLimit.limitReached(memTable);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    static void clean() throws IOException {
+        Path walPath = Path.of("./data/log.txt");
+
+        if (Files.exists(walPath)) {
+            Files.writeString(walPath, "", StandardOpenOption.TRUNCATE_EXISTING);
         }
     }
 }
