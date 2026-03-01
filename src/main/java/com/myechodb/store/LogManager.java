@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 class LogManager {
 
-    static TreeMap<String, String> map = new TreeMap<>();
+    public static TreeMap<String, String> memTable = new TreeMap<>();
 
     public static void readLog() throws IOException {
         List<String> lines = Files.readAllLines(Path.of("data/log.txt"));
@@ -24,7 +24,7 @@ class LogManager {
                 long localChecksum = ChecksumCR32.calculateChecksum(kv);
 
                 if (String.valueOf(localChecksum).equals(parts[2])) {
-                    map.put(parts[0], parts[1]);
+                    memTable.put(parts[0], parts[1]);
                 } else {
                     return;
                 }
@@ -32,14 +32,17 @@ class LogManager {
         }
     }
 
+    // simple cmd prompt
     public static void main(String[] args) {
         try {
             readLog();
+            m
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Scanner sc = new Scanner(System.in);
         while (true) {
-            Scanner sc = new Scanner(System.in);
             System.out.print("> ");
             String input = sc.nextLine();
 
@@ -66,7 +69,7 @@ class LogManager {
 
             if (parts[0].toLowerCase().equals("get")) {
                 String key = parts[1];
-                String value = map.get(key);
+                String value = memTable.get(key);
                 System.out.println(value);
                 continue;
             }
@@ -90,7 +93,7 @@ class LogManager {
                     StandardOpenOption.APPEND,
                     StandardOpenOption.SYNC
                 );
-                map.put(key, value);
+                memTable.put(key, value);
                 System.out.println("Data written to log file");
             } catch (IOException e) {
                 e.printStackTrace();
