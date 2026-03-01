@@ -1,4 +1,4 @@
-package com.myechodb.store;
+package com.flushdb.store;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
