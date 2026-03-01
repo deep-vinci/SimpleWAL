@@ -33,7 +33,7 @@ class LogManager {
     }
 
     // simple cmd prompt
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             readLog();
             MemTableLimit.limitReached(memTable);
@@ -81,7 +81,12 @@ class LogManager {
             if (parts[0].equalsIgnoreCase("get")) {
                 String key = parts[1];
                 String value = memTable.get(key);
-                System.out.println(value);
+
+                if (value == null) {
+                    SSTable.readSSTable(key);
+                } else {
+                    System.out.println(value);
+                }
                 continue;
             }
 
