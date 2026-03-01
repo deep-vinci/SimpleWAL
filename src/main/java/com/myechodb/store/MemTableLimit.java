@@ -47,7 +47,7 @@ public class MemTableLimit {
 
         for (var entry : memTable.entrySet()) {
             sb.append(entry.getKey())
-                    .append("=")
+                    .append(":")
                     .append(entry.getValue())
                     .append("\n");
         }
@@ -61,5 +61,6 @@ public class MemTableLimit {
         System.out.println("Flushed MemTable to: " + newFile);
 
         memTable.clear();
+        LogManager.clean();
     }
 }
