@@ -51,7 +51,7 @@ class LogManager {
 
             String cmd = parts[0].toLowerCase();
             if (
-                !cmd.equals("get") && !cmd.equals("set") && !cmd.equals("exit")
+                    !cmd.equals("get") && !cmd.equals("del") && !cmd.equals("delete") && !cmd.equals("set") && !cmd.equals("exit")
             ) {
                 System.out.println("Unknown command");
                 continue;
@@ -67,14 +67,26 @@ class LogManager {
                 continue;
             }
 
-            if (parts[0].toLowerCase().equals("get")) {
+            if ((cmd.equals("delete") || cmd.equals("del")) && parts.length != 2) {
+                System.out.println("Invalid DELETE command");
+                continue;
+            }
+
+
+            if (parts[0].equalsIgnoreCase("get")) {
                 String key = parts[1];
                 String value = memTable.get(key);
                 System.out.println(value);
                 continue;
             }
 
-            if (parts[0].toLowerCase().equals("exit")) {
+            if (parts[0].equalsIgnoreCase("del") || parts[0].equalsIgnoreCase("delete")) {
+                memTable.put(parts[1], "__tomb__");
+                Utils.writeToLog(Path.of("./data/log.txt"), parts[1] + ":" + "__tomb__" + ":" + ChecksumCR32.calculateChecksum(parts[1]+":"+"__tomb__") + "\n");
+                continue;
+            }
+
+            if (parts[0].equalsIgnoreCase("exit")) {
                 System.out.println("Exiting...");
                 System.exit(0);
             }
