@@ -15,7 +15,7 @@ class LogManager {
     public static TreeMap<String, String> memTable = new TreeMap<>();
 
     public static void readLog() throws IOException {
-        List<String> lines = Files.readAllLines(Path.of("data/log.txt"));
+        List<String> lines = Files.readAllLines(Path.of("data/wal.log"));
 
         for (String line : lines) {
             String[] parts = line.split(":");
@@ -51,7 +51,11 @@ class LogManager {
 
             String cmd = parts[0].toLowerCase();
             if (
-                    !cmd.equals("get") && !cmd.equals("del") && !cmd.equals("delete") && !cmd.equals("set") && !cmd.equals("exit")
+                !cmd.equals("get") &&
+                !cmd.equals("del") &&
+                !cmd.equals("delete") &&
+                !cmd.equals("set") &&
+                !cmd.equals("exit")
             ) {
                 System.out.println("Unknown command");
                 continue;
@@ -67,11 +71,12 @@ class LogManager {
                 continue;
             }
 
-            if ((cmd.equals("delete") || cmd.equals("del")) && parts.length != 2) {
+            if (
+                (cmd.equals("delete") || cmd.equals("del")) && parts.length != 2
+            ) {
                 System.out.println("Invalid DELETE command");
                 continue;
             }
-
 
             if (parts[0].equalsIgnoreCase("get")) {
                 String key = parts[1];
@@ -80,9 +85,22 @@ class LogManager {
                 continue;
             }
 
-            if (parts[0].equalsIgnoreCase("del") || parts[0].equalsIgnoreCase("delete")) {
+            if (
+                parts[0].equalsIgnoreCase("del") ||
+                parts[0].equalsIgnoreCase("delete")
+            ) {
                 memTable.put(parts[1], "__tomb__");
-                Utils.writeToLog(Path.of("./data/log.txt"), parts[1] + ":" + "__tomb__" + ":" + ChecksumCR32.calculateChecksum(parts[1]+":"+"__tomb__") + "\n");
+                Utils.writeToLog(
+                    Path.of("./data/wal.log"),
+                    parts[1] +
+                        ":" +
+                        "__tomb__" +
+                        ":" +
+                        ChecksumCR32.calculateChecksum(
+                            parts[1] + ":" + "__tomb__"
+                        ) +
+                        "\n"
+                );
                 continue;
             }
 
@@ -96,7 +114,7 @@ class LogManager {
             long checksum = ChecksumCR32.calculateChecksum(key + ":" + value);
             String finalLine = key + ":" + value + ":" + checksum + "\n";
 
-            Path logFile = Paths.get("data", "log.txt");
+            Path logFile = Paths.get("data", "wal.log");
             try {
                 Files.write(
                     logFile,
@@ -116,10 +134,14 @@ class LogManager {
     }
 
     static void clean() throws IOException {
-        Path walPath = Path.of("./data/log.txt");
+        Path walPath = Path.of("./data/wal.log");
 
         if (Files.exists(walPath)) {
-            Files.writeString(walPath, "", StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(
+                walPath,
+                "",
+                StandardOpenOption.TRUNCATE_EXISTING
+            );
         }
     }
 }
