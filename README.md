@@ -8,8 +8,9 @@ A Log-Structured Merge Tree is a write-optimized data structure commonly used in
 - **Memtable**: In memory data structure that caches the KV pairs in a sorted order. 
 - **Sorted String Table (SSTable)**: Once memtable reaches it's defined limit of some size it is flushed to SSTable which is a On-disk data structure.
 
+- **Bloom Filters**: To ensure low latency search for KV pairs without reading all the file content, we implement a probabilistic data structure known as Bloom Filter.
 
-## Flow
+## Flow (current)
 ```
 Client Write
      ↓
